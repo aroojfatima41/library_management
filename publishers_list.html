@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>List of all Publishers</title>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+
+    </head>
+
+<style>
+        table{
+                border: 1px solid black;
+                width:100%;
+                box-align: center;
+              }
+        th{
+                border: 1px solid black;
+                background-color:crimson;
+                height: 50px;
+                text-align: center;
+                font-family:'Lucida Sans';
+                font-size: medium;
+           }
+        
+        td {
+                border: 1px solid black;
+                background-color:darksalmon;
+                height: 50px;
+                text-align: center;
+           }
+
+</style>
+
+<script>
+       function ListAllPublishers()
+{
+        if (localStorage.getItem("libraryData")!=null)
+        { 
+                var bookdata=JSON.parse(localStorage.getItem("libraryData"));
+                var tempPublishers={};
+                for (var key=0;key<bookdata.length;key++)
+                {
+                        var table = document.getElementById("publisherTable");
+                        var count = 0;
+                        if (bookdata[key]["Publisher Name"] in tempPublishers) 
+                        {
+                                numbOfBooks=tempPublishers[bookdata[key]["Publisher Name"]];
+                                tempPublishers[bookdata[key]["Publisher Name"]]=parseInt(numbOfBooks)+1;
+                        }
+                        else
+                        {
+                                tempPublishers[bookdata[key]["Publisher Name"]]=1;
+                        }
+                }
+                for(var key in tempPublishers) 
+                {
+             
+                        var row = table.insertRow();
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+                        cell1.innerHTML = key;
+                        cell2.innerHTML =tempPublishers[key];
+                        var delbutton = document.createElement('input');
+// SET INPUT ATTRIBUTE.
+                        delbutton.setAttribute('type', 'button');
+                        delbutton.setAttribute('value', 'Remove');
+
+// ADD THE BUTTON's 'onclick' EVENT.
+                        delbutton.setAttribute('onclick', 'removeRow(this)');
+                        cell3.appendChild(delbutton);
+                }
+        }
+}
+        function removeRow(oButton) 
+       {
+        var myTable = document.getElementById('publisherTable');
+        var element = myTable.rows[oButton.parentNode.parentNode.rowIndex].cells[0].innerHTML;
+        var libraryData=JSON.parse(localStorage.getItem("libraryData"));
+
+        for (var key=0;key<libraryData.length;key++)
+        {
+                if ( libraryData[key]["Publisher Name"]==element)
+                {
+                   libraryData.splice(key,1);
+                   key--;
+                }
+        }
+
+        localStorage.setItem("libraryData",JSON.stringify(libraryData));
+        myTable.deleteRow(oButton.parentNode.parentNode.rowIndex);
+        }
+
+</script>
+
+
+<body onload="ListAllPublishers()">
+   <div class="container">
+        <div>
+               <h1 style="color:purple;text-align:center">List of all publishers</h1>
+        </div>
+
+        <div>
+                <table id="publisherTable">
+                    <tr>
+                        <th> Publisher  </th>
+                        <th> Number of books  </th>
+                        <th> Actions</th>  
+                    </tr>
+                </table>
+                
+        </div>
+
+   </div>
+
+</body>
+</html>

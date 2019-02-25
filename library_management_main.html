@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+            <title >Library Management System </title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
+
+<script>
+   
+  function store()
+  {
+    if (localStorage.getItem("libraryData")===null)
+    {
+         var libraryData=[];
+    }
+    else
+    {
+        var libraryData=JSON.parse(localStorage.getItem("libraryData"));
+    }
+  
+    var Book= document.getElementById("Book name");
+    var Author= document.getElementById("Author Name");
+    var Publisher= document.getElementById("Publisher Name");
+    var date= document.getElementById("Date");
+
+    var NEWBOOK={"Book Name":Book.value,
+                 "Author Name":Author.value,
+                 "Publisher Name":Publisher.value,
+                 "Date":date.value
+                 }
+
+    if (Book.value!="" && Author.value!="" && Publisher.value!="" && date.value!="" )
+    {
+       libraryData.push(NEWBOOK);
+       localStorage.setItem("libraryData",JSON.stringify(libraryData));
+    }          
+  }
+  
+  function storeUpdatedData()
+  {
+      var libraryData=JSON.parse(localStorage.getItem("libraryData"));
+      var Book= document.getElementById("prevBookName");
+      var Author= document.getElementById("prevAuthorName");
+      var Publisher= document.getElementById("prevPublisherName");
+      var date= document.getElementById("prevDate");
+
+      var NEWBOOK={"Book Name":Book.value,
+                 "Author Name":Author.value,
+                 "Publisher Name":Publisher.value,
+                 "Date":date.value
+                 }
+
+      if (Book.value!="" && Author.value!="" && Publisher.value!="" && date.value!="" )
+      {
+       var rowToUpdate=localStorage.getItem("rowToUpdate");
+       libraryData.splice(rowToUpdate-1,1);
+       libraryData.splice(rowToUpdate-1,0,NEWBOOK);
+       localStorage.setItem("libraryData",JSON.stringify(libraryData));
+      }  
+    //deleteTable();    
+    ListAllBooks();
+  }
+
+
+  function ListAllBooks()
+  { 
+     if (localStorage.getItem("libraryData")!=null)
+    { 
+      var bookdata=JSON.parse(localStorage.getItem("libraryData"));
+      for (var key=0;key<bookdata.length;key++)
+      {
+      var table = document.getElementById("myTable");
+      var row = table.insertRow(-1);
+      var cell1 = row.insertCell(0);
+      var cell2 = row.insertCell(1);
+      var cell3 = row.insertCell(2);
+      var cell4 = row.insertCell(3);
+      var cell5 = row.insertCell(4);
+      var cell6 = row.insertCell(5);
+      cell1.innerHTML = key+1;
+      cell2.innerHTML =bookdata[key]["Book Name"];
+      cell3.innerHTML =bookdata[key]["Author Name"];
+      cell4.innerHTML = bookdata[key]["Publisher Name"];
+      cell5.innerHTML = bookdata[key]["Date"];
+
+      var delbutton = document.createElement('input');
+      var updatebutton = document.createElement('input');
+
+// SET INPUT ATTRIBUTE.
+      delbutton.setAttribute('type', 'button');
+      delbutton.setAttribute('value', 'Remove');
+      updatebutton.setAttribute('type', 'button');
+      updatebutton.setAttribute('value', 'Update');
+
+// ADD THE BUTTON's 'onclick' EVENT.
+      delbutton.setAttribute('onclick', 'removeRow(this)');
+      updatebutton.setAttribute('onclick', 'update(this)');
+      cell6.appendChild(delbutton);
+      cell6.appendChild(updatebutton)
+      }
+     }
+  }
+  
+  function deleteTable()
+  {
+    var myTable = document.getElementById('myTable');
+    for(var i = 1;i<myTable.rows.length;)
+    {
+      myTable.deleteRow(i);
+    }
+  }
+  
+  function update(oButton)
+    {
+      var myTable = document.getElementById('myTable');
+      var rowToUpdate = oButton.parentNode.parentNode.rowIndex;
+
+      document.getElementById("prevBookName").placeholder=myTable.rows[rowToUpdate].cells[1].innerHTML;
+      document.getElementById("prevAuthorName").placeholder=myTable.rows[rowToUpdate].cells[2].innerHTML;
+      document.getElementById("prevPublisherName").placeholder=myTable.rows[rowToUpdate].cells[3].innerHTML;
+      document.getElementById("prevDate").placeholder=myTable.rows[rowToUpdate].cells[4].innerHTML;
+      localStorage.setItem("rowToUpdate",JSON.stringify(rowToUpdate));
+     
+      openUpdateForm();
+    }
+
+  function removeRow(oButton) 
+  {
+    var myTable = document.getElementById('myTable');
+    var element =oButton.parentNode.parentNode.rowIndex;
+
+    var libraryData=JSON.parse(localStorage.getItem("libraryData"));
+    libraryData.splice(element-1,1);
+    localStorage.setItem("libraryData",JSON.stringify(libraryData));
+    
+    myTable.deleteRow(oButton.parentNode.parentNode.rowIndex); 
+    deleteTable();
+    ListAllBooks();
+  }
+
+  function openForm() 
+  {
+    document.getElementById("myForm").style.display = "block";
+  }
+  
+  function openUpdateForm() 
+  {
+    document.getElementById("updateForm").style.display = "block";
+  }
+  function closeForm() 
+  {
+    document.getElementById("myForm").style.display = "none";
+  }
+  function closeUpdateForm() 
+  {
+    document.getElementById("updateForm").style.display = "none";
+  }
+  
+  function listAuthors()
+  {
+    location.assign("file:///F:/javascript/library_management/authors_list.html");
+  }
+  
+  function listPublishers()
+  {
+    location.assign("file:///F:/javascript/library_management/publishers_list.html");
+  }
+
+</script>
+</head>
+
+<style>
+           
+      .open-button
+       {
+          background-color:coral;
+          color: white;
+          padding: 16px 20px;
+          border: none;
+          position:fixed;
+          bottom: 0px;
+          width: 280px;
+       }
+
+/* The popup form-hidden by default */
+      .form-popup 
+      {
+        display:none;
+        position: fixed;
+        bottom:0px;
+        border: 3px solid #f1f1f1;
+      }
+
+/* Add styles to the form container */
+      .form-container 
+      {
+        max-width: 300px;
+        padding: 10px;
+        background-color:linen;
+      }
+      
+      table
+      {
+        border: 1px solid black;
+        width:100%;
+        box-align: center;
+      }
+      
+      th
+      {
+        border: 1px solid black;
+        background-color:crimson;
+        height: 50px;
+        text-align: center;
+        font-family:'Lucida Sans';
+        font-size: medium;
+      }
+
+      td 
+      {
+        border: 1px solid black;
+        background-color:darksalmon;
+        height: 50px;
+        text-align: center;
+      }
+      .btn 
+      {
+        background-color:lightgray;
+      }
+ 
+</style>
+
+
+
+<body onload="ListAllBooks()">
+  <div class="container">
+      <div id="main heading">
+          <h1 style="color:purple;text-align:center">Library Management System</h1>
+      </div>
+
+
+      <div id="authors publishers button" class="row" > 
+            <button  type="button" style="color:blueviolet" onclick="listAuthors()">
+                   Authors.
+            </button>
+            <button  style="color:blueviolet" type="button" onclick="listPublishers()">
+                   Publishers.
+            </button>
+    
+      </div>
+
+      <div id="add_new_book">
+          <button class="open-button" onclick="openForm()">Add new book</button>
+      </div>
+
+      <div class="form-popup" id="myForm" >
+            <form  action="file:///F:/javascript/library_management/library_management_main.html" class="form-container"  method="post">
+                  <h1 >Add New Book</h1>
+                  <input type="text" placeholder="Book name" id="Book name"  value='' required>
+                  <input type="text" placeholder="Author name" id="Author Name" value='' required>
+                  <input type="text" placeholder="Publisher name" id="Publisher Name" value='' required>
+                  <input type="date" placeholder="yyyy/mm/dd" id="Date" value='' required><br>
+                  <button type="submit" onclick="store()"  class="btn">submit</button>
+                  <button type="button" class="btn" onclick="closeForm();">Go back!</button>
+            </form>
+      </div>
+
+      <div class="form-popup" id="updateForm" >
+        <form  action="file:///F:/javascript/library_management/library_management_main.html" class="form-container"  method="post">
+              <h1 >Update book data</h1>
+              <input type="text"  id="prevBookName"   required>
+              <input type="text"  id="prevAuthorName"  required>
+              <input type="text"  id="prevPublisherName"  required>
+              <input type="date" id="prevDate"  required><br>
+              <button type="submit" id="updatedata" class="btn" onclick="storeUpdatedData()">update</button>
+              <button type="button" class="btn" onclick="closeUpdateForm();">Go back!</button>
+        </form>
+  </div>
+
+      <div class="row">
+          <table id="myTable">
+              <tr>
+                  <th> Number  </th>
+                  <th> Book Name  </th>
+                  <th>Author</th>  
+                  <th>Publisher</th>
+                  <th>Date</th>
+                  <th> Actions  </th>
+              </tr>
+          </table>
+      </div>
+
+  </div>
+
+</body>
+</html> 
